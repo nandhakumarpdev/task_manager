@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils import timezone
 from .models import Task
@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 def hello(request):
     return HttpResponse({"greeting":"hello world"})
 
-class TaskView(APIView):
+class AllTaskView(APIView):
     serializer_class = TaskSerializer
     def get(self, request):
         queryset = Task.objects.all()
@@ -40,3 +40,10 @@ class TaskView(APIView):
         elif time_unit == "W":
             reported_time = created_at + timedelta(weeks=etc)
         return reported_time
+    
+class TaskView(APIView):
+    serializer_class = TaskSerializer
+    def delete(self, request, id):
+        task = get_object_or_404(Task, pk=id)
+        task.delete()
+        return Response({"message": "Task is deleted successfully"})

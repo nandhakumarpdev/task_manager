@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .views import TaskView
+#from . import TaskView
 
 class TaskViewTest(TestCase):
     pass
