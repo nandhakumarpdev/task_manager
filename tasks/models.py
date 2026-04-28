@@ -1,6 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+# ------Task models-----------
 class Priority(models.TextChoices):
     LOW = "L"
     MEDIUM = "M"
@@ -28,8 +29,9 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) 
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=1, choices=TaskStatus.choices, default=TaskStatus.TODO)
-    hold_on_reason = models.CharField(max_length=100)
+    hold_on_reason = models.CharField(max_length=100, null=True)
     completed_time = models.DateTimeField(null=True)
 
     def __str__(self):
-        return self.name
+        return self.title
+
