@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-avjom6bqio6oj-)fo^okj%40ja!a&iulch+7-0*cf+a61va8il
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -60,6 +60,12 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'task_manager.urls'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# CORS_ALLOW_CREDENTIALS = True
+
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://192.168.43.195:5173",
+# ]
 
 TEMPLATES = [
     {
@@ -135,10 +141,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-"""REST_FRAMEWORK = {
+REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication"
     ]
-}"""
+}

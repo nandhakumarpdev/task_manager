@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
 # ------Task models-----------
 class Priority(models.TextChoices):
@@ -31,6 +31,13 @@ class Task(models.Model):
     status = models.CharField(max_length=1, choices=TaskStatus.choices, default=TaskStatus.TODO)
     hold_on_reason = models.CharField(max_length=100, null=True)
     completed_time = models.DateTimeField(null=True)
+    user_id = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="task",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.title

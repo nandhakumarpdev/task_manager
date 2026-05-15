@@ -1,26 +1,35 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 from .models import Task
 from .serializers import TaskSerializer
+
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
 from datetime import datetime, timedelta
+
+
 
 # Create your views here.
 # for test only
 def hello(request):
     return JsonResponse({"greeting":"hello world"})
 
-# ------------ Task handling --------------------- 
+# ------------ WorkList --------------------- 
 class AllTaskView(APIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = TaskSerializer
-    def get(self, request):
-        queryset = Task.objects.all()
+    def get(self, request, user_id):
+        queryset = Task.objects.filter(user_id=user_id).order_by('id')
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -44,6 +53,7 @@ class AllTaskView(APIView):
         return reported_time
     
 class TaskView(APIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = TaskSerializer
     def get(self, request, id):
         task = get_object_or_404(Task, pk=id)
@@ -52,7 +62,8 @@ class TaskView(APIView):
     
     def put(self, request, id):
         task = get_object_or_404(Task, pk=id)
-        serializer = self.serializer_class(task, data=request.data)
+        serializer = self.serializer_class(task, data=request.data, partial=True)
+        print("put", serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -63,3 +74,69 @@ class TaskView(APIView):
         task.delete()
         return Response({"message": "Task is deleted successfully"})
     
+class UserRegistration(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        if not username or not email or not password:
+            return Response(
+                {
+                    "Error": "All fields required"
+                    },
+                    staus=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists():
+            return Response({"Error": "Field already exists"})
+        
+        user = User.objects.create_user(
+            email=email,
+            username=username,
+            password=password
+        )
+
+        return Response(
+            {
+                "Message" : "User created successfully"
+            },
+            status=status.HTTP_201_CREATED
+        )
+    
+
+class UserLogin(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        if not email or not password:
+            return Response(
+                {"Error": "Field already exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user = User.objects.filter(email=email).first()
+
+        if not user:
+            return Response(
+                {"Error": "Email not exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if not user.check_password(password):
+            return Response(
+                {"Error":"Invalid password"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        refresh = RefreshToken.for_user(user)
+
+        return Response(
+            {
+                "message": "User Login successfully",
+                "user_id": user.id, 
+                "refresh_token": str(refresh),
+                "access_token": str(refresh.access_token)
+            }
+        )
