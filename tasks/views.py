@@ -83,13 +83,13 @@ class UserRegistration(APIView):
         if not username or not email or not password:
             return Response(
                 {
-                    "Error": "All fields required"
+                    "error": "All fields required"
                     },
                     staus=status.HTTP_400_BAD_REQUEST
             )
         
         if User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists():
-            return Response({"Error": "Field already exists"})
+            return Response({"error": "Field already exists"})
         
         user = User.objects.create_user(
             email=email,
@@ -99,7 +99,7 @@ class UserRegistration(APIView):
 
         return Response(
             {
-                "Message" : "User created successfully"
+                "message" : "User created successfully"
             },
             status=status.HTTP_201_CREATED
         )
@@ -112,7 +112,7 @@ class UserLogin(APIView):
 
         if not email or not password:
             return Response(
-                {"Error": "Field already exists"},
+                {"error": "Field already exists"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
@@ -120,13 +120,13 @@ class UserLogin(APIView):
 
         if not user:
             return Response(
-                {"Error": "Email not exists"},
+                {"error": "Email not exists"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
         if not user.check_password(password):
             return Response(
-                {"Error":"Invalid password"},
+                {"error":"Invalid password"},
                 status=status.HTTP_401_UNAUTHORIZED
             )
         
