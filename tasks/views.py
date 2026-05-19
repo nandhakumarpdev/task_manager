@@ -1,12 +1,13 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.db.models import Sum, Avg
 
 from .models import Task
 from .serializers import TaskSerializer
 
-from rest_framework import viewsets, status
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -140,3 +141,22 @@ class UserLogin(APIView):
                 "access_token": str(refresh.access_token)
             }
         )
+    
+class Dashboard(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TaskSerializer
+    def get(self, request, user_id):
+        tasks = Task.objects.filter(user_id=user_id)
+        data = {
+            "total_tasks": tasks.count(),
+            "completed_tasks": tasks.filter(status="D").count(),
+            "todo_tasks": tasks.filter(status="T").count(),
+            "in_progress_tasks": tasks.filter(status="D").count(),
+            "on_hold_tasks": tasks.filter(status="O").count(),
+            "low_priority": tasks.filter(priority="L").count(),
+            "medium_priority": tasks.filter(priority="M").count(),
+            "high_priority": tasks.filter(priority="H").count(),
+            "total_average_etc": tasks.aggregate(Avg("estimate_time_to_complete")),
+            "total_sum_etc": tasks.aggregate(Sum("estimate_time_to_complete"))
+        }
+        return Response(data)

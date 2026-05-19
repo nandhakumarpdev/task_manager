@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AllTaskView, TaskView, UserRegistration, UserLogin
+from .views import AllTaskView, TaskView, UserRegistration, UserLogin, Dashboard
 
 urlpatterns = [
     #path('', views.hello),
@@ -8,9 +8,13 @@ urlpatterns = [
     path("account/login/", UserLogin.as_view(), name="user-login"),
 
     # Worklist
-    path("get-tasks/<int:user_id>",AllTaskView.as_view(), name="get-all-tasks"),
-    path("get-task/<int:id>", TaskView.as_view(), name="get-task"),
-    path("update-task/<int:id>", TaskView.as_view(), name="update-task"),
-    path("add-task/", AllTaskView.as_view(), name="add-task"),
-    path("delete-task/<int:id>", TaskView.as_view(), name="delete-task"),
+    path("api/get-tasks/<int:user_id>",AllTaskView.as_view(), name="get-all-tasks"),
+    path("api/get-task/<int:id>", TaskView.as_view(), name="get-task"),
+    path("api/update-task/<int:id>", TaskView.as_view(), name="update-task"),
+    path("api/add-task/", AllTaskView.as_view(), name="add-task"),
+    path("api/delete-task/<int:id>", TaskView.as_view(), name="delete-task"),
+
+    #dashboard
+    path("api/dashboard/<int:user_id>", Dashboard.as_view(), name="dashboard"),
+
 ]
