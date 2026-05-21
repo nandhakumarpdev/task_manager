@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AllTaskView, TaskView, UserRegistration, UserLogin, Dashboard
+from .views import AllTaskView, TaskView, UserRegistration, UserLogin, Dashboard, EnableDashboardCheck
 
 urlpatterns = [
     #path('', views.hello),
@@ -16,5 +16,5 @@ urlpatterns = [
 
     #dashboard
     path("api/dashboard/<int:user_id>", Dashboard.as_view(), name="dashboard"),
-
+    path("api/check-dashboard-enable/<int:user_id>", EnableDashboardCheck.as_view(), name="enable-dashboard-check"),
 ]

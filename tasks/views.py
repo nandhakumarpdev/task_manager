@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum, Avg
 
 from .models import Task
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer, UserSerializer
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -160,3 +160,17 @@ class Dashboard(APIView):
             "total_sum_etc": tasks.aggregate(Sum("estimate_time_to_complete"))
         }
         return Response(data)
+    
+class EnableDashboardCheck(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id):
+
+        user = User.objects.get(id=user_id)
+
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "is_staff": user.is_staff
+        })
