@@ -163,11 +163,22 @@ class Dashboard(APIView):
     
 class EnableDashboardCheck(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = TaskSerializer
+
+    def enable_dashboard(self, user_id):
+        count = Task.objects.filter(user_id=user_id, status='D').count()
+        if count >= 2:
+            print(count, "it is updating")
+            user = User.objects.get(id=user_id)
+            user.is_staff = True
+            user.save()
 
     def get(self, request, user_id):
 
         user = User.objects.get(id=user_id)
 
+        self.enable_dashboard(user_id)
+        
         return Response({
             "id": user.id,
             "username": user.username,
