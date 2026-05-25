@@ -151,7 +151,7 @@ class Dashboard(APIView):
             "total_tasks": tasks.count(),
             "completed_tasks": tasks.filter(status="D").count(),
             "todo_tasks": tasks.filter(status="T").count(),
-            "in_progress_tasks": tasks.filter(status="D").count(),
+            "in_progress_tasks": tasks.filter(status="I").count(),
             "on_hold_tasks": tasks.filter(status="O").count(),
             "low_priority": tasks.filter(priority="L").count(),
             "medium_priority": tasks.filter(priority="M").count(),
@@ -167,21 +167,21 @@ class EnableDashboardCheck(APIView):
 
     def enable_dashboard(self, user_id):
         count = Task.objects.filter(user_id=user_id, status='D').count()
-        if count >= 2:
+        if count >= 5:
             print(count, "it is updating")
             user = User.objects.get(id=user_id)
             user.is_staff = True
             user.save()
+        return count
 
     def get(self, request, user_id):
-
         user = User.objects.get(id=user_id)
-
-        self.enable_dashboard(user_id)
+        task_count = self.enable_dashboard(user_id)
         
         return Response({
             "id": user.id,
             "username": user.username,
             "email": user.email,
-            "is_staff": user.is_staff
+            "is_staff": user.is_staff,
+            "task_count" : task_count
         })
