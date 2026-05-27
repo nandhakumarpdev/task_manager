@@ -154,3 +154,9 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# for storing image
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

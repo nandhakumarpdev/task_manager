@@ -41,4 +41,25 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Gender(models.TextChoices):
+    MALE = "M"    
+    FEMALE = "F"
+    OTHERS = "O"
 
+class UserDetails(models.Model):
+    dob = models.DateTimeField(null=True)
+    gender = models.CharField(max_length=1, choices=Gender.choices, null=True)
+    age = models.IntegerField(null=True)
+    user_id = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="userDetails",
+        null=True,
+        blank=True
+    )
+    profile_image = models.ImageField(
+        upload_to="profile_images/",
+        null=True,
+        blank=True
+    )
