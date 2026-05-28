@@ -19,7 +19,7 @@ urlpatterns = [
     path("api/check-dashboard-enable/<int:user_id>", EnableDashboardCheck.as_view(), name="enable-dashboard-check"),
 
     #user details
-    path("api/user-details/check-exists/<int:user_id>", UserDetailsView.as_view(), name="user-details-check-exists"),
+    path("api/user-details/get/<int:user_id>", UserDetailsView.as_view(), name="user-details-check-exists"),
     path("api/user-details/creation/<int:user_id>", UserDetailsView.as_view(), name="user-details-creation"),
     path("api/user-details/updation/<int:user_id>", UserDetailsView.as_view(), name="user-details-updation"),
 ]

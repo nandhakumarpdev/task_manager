@@ -3,15 +3,16 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models import Sum, Avg
+from django.db import connection
 
-from .models import Task
-from .serializers import TaskSerializer, UserSerializer
+from .models import Task, UserDetails
+from .serializers import TaskSerializer, UserDetailsSerializer
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 
 from datetime import datetime, timedelta
 
@@ -64,7 +65,6 @@ class TaskView(APIView):
     def put(self, request, id):
         task = get_object_or_404(Task, pk=id)
         serializer = self.serializer_class(task, data=request.data, partial=True)
-        print("put", serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -185,3 +185,29 @@ class EnableDashboardCheck(APIView):
             "is_staff": user.is_staff,
             "task_count" : task_count
         })
+
+class UserDetailsView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserDetailsSerializer
+
+    def get(self, request, user_id):
+        user = get_object_or_404(UserDetails, user_id = user_id)
+        serializer = self.serializer_class(user)
+        return Response(serializer.data)
+
+    def post(self, request, user_id):
+        user = User.objects.get(id=user_id)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user_id=user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)  
+        return Response(serializer.errors) 
+
+    def put(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        user_details = get_object_or_404(UserDetails, user_id=user)
+        serializer = self.serializer_class(user_details, data=request.data)
+        if serializer.is_valid():
+            serializer.save(user_id=user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors)
