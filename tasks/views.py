@@ -33,7 +33,7 @@ class AllTaskView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, partial=True)
         if serializer.is_valid():
             reported_time = self.update_report_time(serializer)
             serializer.save(reported_time = reported_time)

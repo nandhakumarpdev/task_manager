@@ -20,7 +20,7 @@ class TaskStatus(models.TextChoices):
 
 class Task(models.Model):
     title = models.CharField(max_length=50)
-    description = models.CharField(max_length=250)
+    description = models.CharField(max_length=250, blank=True, null=True)
     assignee = models.CharField(max_length=100)
     priority =  models.CharField(max_length=1, choices=Priority.choices, default=Priority.MEDIUM)
     time_unit = models.CharField(max_length=1, choices=TimeUnit.choices, default=TimeUnit.HOUR)
