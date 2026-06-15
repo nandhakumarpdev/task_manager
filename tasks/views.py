@@ -28,7 +28,7 @@ class AllTaskView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TaskSerializer
     def get(self, request, user_id):
-        queryset = Task.objects.filter(user_id=user_id).order_by('id')
+        queryset = Task.objects.filter(user_id=user_id).order_by('-id')
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 
@@ -105,7 +105,6 @@ class UserRegistration(APIView):
             status=status.HTTP_201_CREATED
         )
     
-
 class UserLogin(APIView):
     def post(self, request):
         email = request.data.get("email")
