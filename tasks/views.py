@@ -86,7 +86,7 @@ class UserRegistration(APIView):
                 {
                     "error": "All fields required"
                     },
-                    staus=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST
             )
         
         if User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists():
