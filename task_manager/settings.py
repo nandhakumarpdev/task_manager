@@ -70,6 +70,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 #     "http://192.168.43.195:5173",
 # ]
 
+CORS_ALLOWED_ORIGINS = [
+    "https://worklist-frontend.vercel.app/",
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
