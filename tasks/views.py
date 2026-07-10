@@ -90,7 +90,7 @@ class UserRegistration(APIView):
             )
         
         if User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists():
-            return Response({"error": "Field already exists"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "User already exists"}, status=status.HTTP_400_BAD_REQUEST)
         
         user = User.objects.create_user(
             email=email,
