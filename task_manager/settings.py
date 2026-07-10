@@ -108,7 +108,7 @@ DATABASES = {
 
 # External database url
 # postgresql://worklist_user:auidiV55tSpMXKtTPd5971ETXd75fsyL@dpg-d8o069ugvqtc73e79jm0-a.oregon-postgres.render.com/worklist
-# DATABASES["default"] = dj_database_url.parse(config("DATABASE_URL"))
+DATABASES["default"] = dj_database_url.parse(config("DATABASE_URL"))
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
