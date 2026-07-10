@@ -71,7 +71,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 # ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://worklist-frontend.vercel.app/",
+    "https://worklist-frontend.vercel.app", "http://localhost:3000", "http://127.0.0.1:5173"
 ]
 
 TEMPLATES = [
@@ -108,7 +108,7 @@ DATABASES = {
 
 # External database url
 # postgresql://worklist_user:auidiV55tSpMXKtTPd5971ETXd75fsyL@dpg-d8o069ugvqtc73e79jm0-a.oregon-postgres.render.com/worklist
-DATABASES["default"] = dj_database_url.parse(config("DATABASE_URL"))
+# DATABASES["default"] = dj_database_url.parse(config("DATABASE_URL"))
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
